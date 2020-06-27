@@ -1,0 +1,15 @@
+---
+  - set_fact:
+      env_kc: '{{ proxy_env |default({}) | combine ({"KUBECONFIG" :"/etc/kubernetes/admin.conf"}) }}'
+    when: enable_proxy == true
+    tags:
+    - always
+
+  # PULL IMAGES
+  - name: Pull k8s images
+    docker_image:
+      name: "{{ item.name }}"
+      tags: "{{ item.tag }}"
+      source: pull
+    with_items: "{{ K8S_IMAGES }}" 
+      #tags:

@@ -1,0 +1,12 @@
+- name: 'Deploy k8s {{ Role }} HA'
+  hosts: master-primary
+  roles:
+    - { role: common }
+    - { role: kubeadmin }
+    - { role: k8s-master-primary, tags: ['deploy'] }
+  vars:
+    address: "{{ ansible_facts.default_ipv4.address }}" 
+    servicesubnet: 10.10.0.0/24
+    podsunbet: 10.20.0.0/24
+    dnsDomain: cluster.local
+

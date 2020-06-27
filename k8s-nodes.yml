@@ -1,0 +1,4 @@
+- name: 'Deploy k8s {{ role }}'
+  hosts: nodes
+  roles:
+    - { role: k8s-node, tags: ['deploy'] }

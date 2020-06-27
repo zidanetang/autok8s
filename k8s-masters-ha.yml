@@ -1,0 +1,5 @@
+- name: 'Deploy k8s {{ role }} HA'
+  hosts: masters
+  roles:
+    - { role: k8s-master-primary, tags: ['deploy'] }
+    - { role: k8s-master-slave, tags: ['deploy'] }

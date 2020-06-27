@@ -1,0 +1,7 @@
+---
+# Set timezone
+
+  - name: set timezone to Asia/Shanghai
+    timezone:
+      name: "{{ localtions }}"
+      #name: Asia/Shanghai

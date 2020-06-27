@@ -1,0 +1,8 @@
+#docker_version: 18.06.3-ce
+#KUBERNETES_VERSION: "1.18.4"
+#kubeadm_version: "{{ KUBERNETES_VERSION }}*" #1.9.* #when undefined, it will not check it
+#kubelet_version: "{{ KUBERNETES_VERSION }}*" #1.9.* #when undefined, it will not check it
+#kubectl_version: "{{ KUBERNETES_VERSION }}*" #1.9.* #when undefined, it will not check it
+#dnsDomain: cluster.local
+#host_Name: master-primary
+#Role: k8s-master-primary

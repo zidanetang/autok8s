@@ -1,0 +1,34 @@
+---
+# Debian based (includes Ubuntu) prerequisites for using apt-get from ansible:
+- name: Install apt-transport-https
+  package: 
+    name: "{{ item }}"
+    state: present
+  environment: "{{ proxy_env | default ({}) }}"
+#    http_proxy: '{{ proxy_env.http_proxy | default ({}) }}'
+#    https_proxy: '{{ proxys_env.http_proxy | default ({}) }}'
+    
+  with_items:
+  - apt-transport-https
+  when: ansible_os_family == "Debian"
+
+  # Create deb repos for kubernetes packages (kube*, cni, etc.)
+- block:
+  # Debian based (includes Ubuntu)
+  - apt_key:
+      url: "{{ k8s_apt_key }}apt-key.gpg"
+      state: present
+    environment: "{{ proxy_env | default ({}) }}"
+#      http_proxy: '{{ proxy_env.http_proxy | default ({}) }}'
+#      https_proxy: '{{ proxys_env.http_proxy | default ({}) }}'
+    when: ansible_os_family == "Debian"
+
+  - apt_repository:
+      repo: "deb {{ k8s_repo }} kubernetes-xenial main"
+      state: present
+      #filename: 'kubernetes.list'
+      update_cache: yes
+    environment: "{{ proxy_env | default ({}) }}"
+#      http_proxy: '{{ proxy_env.http_proxy | default ({}) }}'
+#      https_proxy: '{{ proxys_env.http_proxy | default ({}) }}'
+    when: ansible_os_family == "Debian"

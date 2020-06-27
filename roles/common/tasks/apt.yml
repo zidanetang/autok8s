@@ -1,0 +1,15 @@
+---
+#apt update cache and software
+
+  - name: Run the equivalent of "apt-get update" as a separate step
+    environment: "{{ proxy_env | default ({}) }}"
+    apt:
+      update_cache: yes
+      force: yes
+      force_apt_get: yes
+
+  - name: Update all packages to the latest version
+    environment: "{{ proxy_env | default ({}) }}"
+    apt:
+      upgrade: dist
+    tags: update-all

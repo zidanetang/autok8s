@@ -1,0 +1,4 @@
+#- include: images.yml
+- include: kubeadminit.yml
+#- include: kubeconfig.yml
+- include: addons.yml

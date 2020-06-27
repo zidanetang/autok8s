@@ -1,0 +1,9 @@
+- include: etc.yml
+- include: limits.yml
+#need to fix
+- include: apt.yml
+- include: docker.yml
+- include: timezone.yml
+- include: chrony.yml
+- include: swap.yml
+

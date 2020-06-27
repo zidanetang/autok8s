@@ -1,0 +1,10 @@
+---
+# Install CNI network add-on
+
+- name: Instrall flannel config file
+  copy: 
+    src: flannel/flannel.yml
+    dest: "{{ kube_path }}/flannel.yml"
+
+- name: Install flannel
+  raw: /bin/kubectl --kubeconfig="{{ kube_path }}/admin.conf" create -f "{{ kube_path }}/flannel.yml"

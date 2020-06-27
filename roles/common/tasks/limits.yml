@@ -1,0 +1,12 @@
+---
+  - pam_limits:
+      domain: '*'
+      limit_type: soft
+      limit_item: nofile
+      value: 524288
+
+  - pam_limits:
+      domain: '*'
+      limit_type: hard
+      limit_item: nofile
+      value: 524288

@@ -1,0 +1,17 @@
+---
+enable_proxy: true
+proxy_env:
+  http_proxy: http://172.16.1.112:10809
+  https_proxy: http://172.16.1.112:10809
+
+KUBERNETES_VERSION: "1.18.4"
+
+gcr_url: gcr.io/google-containers
+
+kube_path: /etc/kubernetes
+
+K8S_IMAGES:
+  - - { name: "{{ gcr_url }}/kube-scheduler-amd64", tag: "v{{ KUBERNETES_VERSION }}" }
+    - { name: "{{ gcr_url }}/kube-controller-manager-amd64", tag: "v{{ KUBERNETES_VERSION }}" }
+    - { name: "{{ gcr_url }}/kube-apiserver-amd64", tag: "v{{ KUBERNETES_VERSION }}" }
+

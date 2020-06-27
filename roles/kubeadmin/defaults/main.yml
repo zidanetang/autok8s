@@ -1,0 +1,16 @@
+---
+proxy_env:
+  https_proxy: http://172.16.1.112:10809
+  http_proxy: http://172.16.1.112:10809
+
+k8s_apt_key: https://packages.cloud.google.com/apt/doc/
+k8s_repo: http://apt.kubernetes.io/
+
+KUBERNETES_VERSION: "v1.18.4"
+
+kubeadm_version: "{{ KUBERNETES_VERSION }}" #1.9.* #when undefined, it will not check it
+kubelet_version: "{{ KUBERNETES_VERSION }}" #1.9.* #when undefined, it will not check it
+kubectl_version: "{{ KUBERNETES_VERSION }}" #1.9.* #when undefined, it will not check it
+
+#cloudProvider: aws
+dnsDomain: cluster.local

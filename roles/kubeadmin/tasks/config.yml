@@ -1,0 +1,55 @@
+---
+- name: Make sure folder /etc/kubernetes/ exists
+  file: path=/etc/kubernetes state=directory mode=0755
+
+### prepare cloud-config
+- block:
+  - name: prepare cloud-config file for cloudProvider {{ cloudProvider }}
+    set_fact: fact_cloud_provider='--cloud-provider={{ cloudProvider }} --cloud-config=/etc/kubernetes/cloud-config'
+    when: cloudProvider is defined
+
+  - name: prepare cloud-config file
+    template:
+      src: cloud-config.j2
+      dest: /etc/kubernetes/cloud-config
+      force: yes
+    tags:
+    - init
+    # notify:
+    # - Restart kubelet
+
+  # BLOCK ENDS with its condition:
+  when: 
+  - cloudProvider is defined
+  #- inventory_hostname in groups['masters']
+  tags:
+  - kubelet
+
+### kubeadm settings:
+- name: Replace {{ dnsDomain }} under cluster-domain in kubelet.service.d/10-kubeadm.conf
+  replace:
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: '(--cluster-domain=)[A-Za-z0-9\-\.]+(.*)'
+    replace: '\1{{ dnsDomain | default("cluster.local") }}\2'
+    #backup: yes
+  when: dnsDomain is defined
+  notify:
+  - Reload systemd # already by other handler
+  - Restart kubelet
+  tags:
+  - kubeadm
+  - kubelet
+
+- name: Create kubeadm sysctl file
+  copy: src=90-kubeadm.conf dest=/etc/sysctl.d/90-kubeadm.conf
+  tags:
+  - kubeadm
+  - kubelet
+
+- name: Set sysctl settings
+  command: sysctl --system
+  ignore_errors: yes # ignore errors which appear in vm simulated with docker 
+  tags:
+  - kubeadm
+  - kubelet
+

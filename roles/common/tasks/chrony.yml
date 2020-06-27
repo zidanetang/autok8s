@@ -1,0 +1,33 @@
+---
+# Used to sync time
+# Install and config chrony
+
+  - name: install chrony
+    apt: 
+      name: chrony
+
+  - name: check chrony init script
+    stat: path=/etc/init.d/chrony
+    register: chronyd_init
+    tags: chronyd-upstart
+
+  - name: stop chronyd
+    service:
+      name: chronyd
+      state: stopped
+    when: chronyd_init.stat.exists
+    tags: chronyd-upstart
+
+  - name: Create conf for chrony
+    copy:
+      src: chrony.conf
+      dest: /etc/chrony/chrony.conf
+    register: chrony_upstart
+    tags: chrony-upstart
+
+  - name: start chrony
+    service:
+      name: chrony
+      state: restarted
+    when: chrony_upstart.changed
+    tags: chrony-upstart

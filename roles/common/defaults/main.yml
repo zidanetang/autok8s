@@ -1,0 +1,20 @@
+---
+
+docker_version: 18.06.3-ce
+#docker_sha256sum: 1270dce1bd7e1838d62ae21d2505d87f16efc1d9074645571daaefdfd0c14054 
+docker_url: https://download.docker.com/linux/static/stable/x86_64
+docker_base_directory: /usr/bin
+docker_binary_file_names:
+  - docker
+  - docker-containerd
+  - docker-containerd-ctr
+  - docker-containerd-shim
+  - docker-init
+  - docker-proxy
+  - docker-runc
+  - dockerd
+docker_binary_full_path: "{{ docker_base_directory }}/{{ docker_binary_file_names }}"
+#docker_daemon: ""
+
+proxy_url: http://172.16.1.112:10809
+localtions: Asia/Shanghai

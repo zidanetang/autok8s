@@ -1,0 +1,103 @@
+---
+    
+  - name: create docker group
+    group: name=docker gid=5000
+
+  - name: create docker user
+    user: name=docker group=docker uid=5000
+
+  - name: make sure {{ docker_base_directory }} exists
+    file: path={{ docker_base_directory }} state=directory owner=root group=root mode=0755
+
+  - name: stat main docker binary
+    stat: path={{docker_binary_full_path}}-{{ docker_version }}
+    register: docker_binary
+    ignore_errors: yes
+
+  - name: download docker {{docker_version}}
+    # Use wget instead of get_url module to workaround python < 2.7.9 lack of SNI support.
+    # see: https://github.com/ansible/ansible/issues/12161
+    command: wget -t 10 -P /tmp {{ docker_url }}/docker-{{docker_version}}.tgz
+    # Do not download if binary already exists. Docker does not support hot upgrades in place.
+    # see: https://github.com/docker/docker/issues/2658
+    when: docker_binary.stat.exists == False
+
+#  - name: verify docker checksum
+#    shell: echo "{{docker_sha256sum}} /tmp/docker-{{docker_version}}.tgz" | sha256sum -c
+#    when: docker_binary.stat.exists == False
+
+  - name: unpack docker-{{docker_version}}.tgz archive
+    unarchive: src=/tmp/docker-{{docker_version}}.tgz dest=/tmp copy=no creates=/tmp/docker-{{docker_version}}
+    when: docker_binary.stat.exists == False
+
+  - name: copy binaries to {{ docker_base_directory }}
+    shell: cp -f /tmp/docker/{{ item }} {{ docker_base_directory }}/{{ item }}-{{ docker_version }}
+    when: docker_binary.stat.exists == False
+    with_items: "{{ docker_binary_file_names }}"
+
+  - name: create symlinks to binaries
+    file: src={{ docker_base_directory }}/{{ item }}-{{ docker_version }} dest={{ docker_base_directory }}/{{ item }} state=link force=yes
+    with_items: "{{ docker_binary_file_names }}"
+    # XXX: Ignore errors related to older docker binaries
+    #      which predate using versioned symlinks.
+    register: docker_symlinks
+    ignore_errors: yes
+
+  - name: set docker daemon permissions
+    shell: chmod +x {{ docker_base_directory }}/{{ item }}-{{ docker_version }}
+    with_items: "{{ docker_binary_file_names }}"
+    when: docker_binary.stat.exists == False
+    ignore_errors: yes
+
+  - name: stat init upstart
+    stat: path=/etc/init
+    register: init_upstart
+    tags: docker-upstart
+
+  - name: install docker upstart script
+    template: src=docker/docker.conf.j2 dest=/etc/init/docker.conf owner=root group=root mode=0644
+    when: init_upstart.stat.exists
+    tags: docker-upstart
+
+  - name: install docker sysvinit script
+    template: src=docker/docker-ubuntu.j2 dest=/etc/init.d/docker owner=root group=root mode=0755
+    when: not init_upstart.stat.exists
+
+  - name: install docker-gc script
+    template: src=docker/docker-gc.j2 dest=/usr/bin/docker-gc owner=root group=root mode=0755
+
+  - name: install docker-gc cron
+    cron: name="docker-gc" minute="0" hour="*" job="/usr/bin/docker-gc 2>&1 | /usr/bin/logger -t docker-gc"
+  
+  - name: set https_proxy in dorcker
+    lineinfile:
+      path: /etc/default/docker
+      state: present
+      line: "https_proxy={{ proxy_url }}"
+      create: yes
+
+  - name: set http_proxy in docker
+    lineinfile:
+      path: /etc/default/docker
+      state: present
+      line: "http_proxy={{ proxy_url }}"
+      create: yes
+
+# add into sysctl.conf already.
+#  - name: enable ip forwarding for containers
+#    sysctl: name="net.ipv4.ip_forward" value=1 sysctl_set=yes state=present reload=yes
+
+  - name: make sure docker daemon is running
+    service: name=docker state=started enabled=yes
+
+  - name: install pip
+    command: easy_install pip==9.0.1
+
+  - name: install docker-py module
+    pip: name=docker-py version=1.10.6 state=present
+
+  - name: install six module
+    pip: name=six version=1.9.0 state=present
+
+  - name: ensure correct requests module version
+    pip: name=requests version=2.12.1 state=present
