@@ -16,5 +16,10 @@ docker_binary_file_names:
 docker_binary_full_path: "{{ docker_base_directory }}/{{ docker_binary_file_names }}"
 #docker_daemon: ""
 
-proxy_url: http://172.16.1.112:10809
+#proxy_url: http://172.16.1.112:10809
 localtions: Asia/Shanghai
+ipadd: "{{ ansible_default_ipv4.address }}"
+pip_version: 9.0.1
+docker_py_version: 1.10.6
+six_version: 1.9.0
+requests_version: 2.12.1

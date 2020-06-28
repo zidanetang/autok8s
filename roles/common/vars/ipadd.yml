@@ -1,1 +1,1 @@
-ipadd: "{{ ansible_default_ipv4.address }}"
+ipadd: {{ ansible_facts.ansible_default_ipv4.address }}

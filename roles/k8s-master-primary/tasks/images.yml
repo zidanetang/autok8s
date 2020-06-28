@@ -1,7 +1,7 @@
 ---
   - set_fact:
       env_kc: '{{ proxy_env |default({}) | combine ({"KUBECONFIG" :"/etc/kubernetes/admin.conf"}) }}'
-    when: enable_proxy == true
+    when: proxy_env is defined
     tags:
     - always
 

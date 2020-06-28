@@ -1,23 +1,13 @@
 ---
 # Install kebelet
 
-#- name: Install kubelet
-#  package:
-#    name: "{{ item }}-{{ kubelet_version | regex_replace('v') }}*"
-#    state: present
-#  environment: "{{ proxy_env | default ({}) }}" 
-#  with_items:
-#  - kubelet
-#  when: kubelet_version is defined and ansible_os_family == "Debian"
-
 - name: Install kubelet
   apt:
     name: "{{ item }}"
     state: present
   environment: "{{ proxy_env | default ({}) }}"
   with_items:
-#  - kubelet="{{ kubelet_version | regex_replace('v') }}-01"
-#   - kubelet="{{ kubelet_version | replace('v', '') }}*"
+#  - kubelet="{{ kubelet_version | replace('v', '') }}*"
    - kubelet
   when: kubelet_version is defined and ansible_os_family == "Debian"
 

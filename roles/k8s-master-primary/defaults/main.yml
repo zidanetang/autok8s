@@ -1,8 +1,8 @@
 ---
 enable_proxy: true
-proxy_env:
-  http_proxy: http://172.16.1.112:10809
-  https_proxy: http://172.16.1.112:10809
+#proxy_env:
+#  http_proxy: http://172.16.1.112:10809
+#  https_proxy: http://172.16.1.112:10809
 
 KUBERNETES_VERSION: "1.18.4"
 

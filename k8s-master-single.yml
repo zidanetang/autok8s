@@ -5,8 +5,13 @@
     - { role: kubeadmin }
     - { role: k8s-master-primary, tags: ['deploy'] }
   vars:
-    address: "{{ ansible_facts.default_ipv4.address }}" 
     servicesubnet: 10.10.0.0/24
     podsunbet: 10.20.0.0/24
     dnsDomain: cluster.local
+    proxy_env:
+      http_proxy: http://172.16.1.112:10809
+      https_proxy: http://172.16.1.112:10809
+    localtions: Asia/Shanghai  
+ #To do:
+    #cloudProvider:
 
