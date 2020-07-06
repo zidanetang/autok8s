@@ -4,9 +4,9 @@
 
 - name: Install kubeadm # ansible bug 29705
   apt:
-    name: "{{ item }}"
+    name: kubeadm={{ KUBERNETES_VERSION }}-00
     state: present
   environment: "{{ proxy_env | default ({}) }}"
-  with_items:
-  - kubeadm
+  #with_items:
+  #- kubeadm
   when: kubeadm_version is defined and ansible_os_family == "Debian"

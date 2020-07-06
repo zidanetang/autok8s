@@ -1,13 +1,18 @@
 ---
 # Install kebelet
 
-- name: Install kubelet
+- name: install kubelet
   apt:
-    name: "{{ item }}"
+    name: kubelet={{ KUBERNETES_VERSION }}-00
     state: present
   environment: "{{ proxy_env | default ({}) }}"
-  with_items:
+#  with_items:
 #  - kubelet="{{ kubelet_version | replace('v', '') }}*"
-   - kubelet
+#   - kubelet
   when: kubelet_version is defined and ansible_os_family == "Debian"
 
+- name: enable service kubelet
+  systemd:
+    name: kubelet
+    enabled: yes
+    masked: no

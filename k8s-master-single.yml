@@ -12,6 +12,7 @@
       http_proxy: http://172.16.1.112:10809
       https_proxy: http://172.16.1.112:10809
     localtions: Asia/Shanghai  
+    KUBERNETES_VERSION: 1.18.2
  #To do:
     #cloudProvider:
 

@@ -23,6 +23,8 @@ nodeRegistration:
 #     value: "master"
 #     effect: "NoSchedule"
   kubeletExtraArgs:
+#  Flag --resolv-conf has been deprecated, This parameter should be set via the config file specified by the Kubelet's --config flag. See https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/ for more information
+#    cgroup-driver: "systemd"
     cgroup-driver: "cgroupfs"
 #localAPIEndpoint:
 #   advertiseAddress: "10.100.0.1"
@@ -35,22 +37,25 @@ kind: ClusterConfiguration
 etcd:
 #   # one of local or external
   local:
-    imageRepository: "k8s.gcr.io"
+    #imageRepository: "k8s.gcr.io"
+    imageRepository: {% if (localtions == 'Asia/Shanghai') %}{{ 'registry.cn-hangzhou.aliyuncs.com/google_containers' }}{% else %}{{ 'k8s.gcr.io' }}{% endif %} 
     imageTag: "3.2.24"
     dataDir: "/var/lib/etcd"
-#     extraArgs:
-#       listen-client-urls: "http://10.100.0.1:2379"
+#    extraArgs:
+#      listen-client-urls: "http://{{ Role }}-{{ ipadd | replace('.', '-') }}:2379"
+#      listen-client-urls: "http://{{ ipadd }}:2379"
+#      listen-client-urls: "http://127.0.0.1:2379"
 #     serverCertSANs:
 #     -  "ec2-10-100-0-1.compute-1.amazonaws.com"
 #     peerCertSANs:
 #     - "10.100.0.1"
-  # external:
+#    external:
     # endpoints:
     # - "10.100.0.1:2379"
     # - "10.100.0.2:2379"
-    # caFile: "/etcd/kubernetes/pki/etcd/etcd-ca.crt"
-    # certFile: "/etcd/kubernetes/pki/etcd/etcd.crt"
-    # keyFile: "/etcd/kubernetes/pki/etcd/etcd.key"
+#      caFile: "/etc/kubernetes/pki/etcd/etcd-ca.crt"
+#      certFile: "/etc/kubernetes/pki/etcd/etcd.crt"
+#      keyFile: "/etc/kubernetes/pki/etcd/etcd.key"
 networking:
   serviceSubnet: {{ servicesubnet}}
   podSubnet: {{ podsunbet }}
@@ -93,6 +98,8 @@ apiServer:
 #   pathType: File
 # certificatesDir: "/etc/kubernetes/pki"
 # imageRepository: "k8s.gcr.io"
+imageRepository: {% if (localtions == 'Asia/Shanghai') %}{{ 'registry.cn-hangzhou.aliyuncs.com/google_containers' }}{% else %}{{ 'k8s.gcr.io' }}{% endif %}
+
 # useHyperKubeImage: false
 clusterName: {{ dnsDomain | default("cluster.local")}}
 
@@ -100,7 +107,8 @@ clusterName: {{ dnsDomain | default("cluster.local")}}
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 # kubelet specific options here
-
+#cgroupDriver: systemd
+cgroupDriver: cgroupfs
 ---
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration

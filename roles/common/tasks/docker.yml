@@ -36,7 +36,7 @@
     with_items: "{{ docker_binary_file_names }}"
 
   - name: create symlinks to binaries
-    file: src={{ docker_base_directory }}/{{ item }}-{{ docker_version }} dest={{ docker_base_directory }}/{{ item }} state=link force=yes
+    file: src={{ docker_base_directory }}/{{ item }}-{{ docker_version }} dest={{ docker_base_directory }}/{{ item | replace('docker-','')}} state=link force=yes
     with_items: "{{ docker_binary_file_names }}"
     # XXX: Ignore errors related to older docker binaries
     #      which predate using versioned symlinks.
@@ -60,34 +60,38 @@
     tags: docker-upstart
 
   - name: install docker sysvinit script for Ubuntu
+    template: src=docker/docker-ubuntu-k8s.j2 dest=/etc/init.d/docker owner=root group=root mode=0755
+    when: not init_upstart.stat.exists and ansible_os_family == "Debian" and KUBERNETES_VERSION is defined
+
+  - name: install docker sysvinit script for Ubuntu
     template: src=docker/docker-ubuntu.j2 dest=/etc/init.d/docker owner=root group=root mode=0755
-    when: not init_upstart.stat.exists and ansible_os_family == "Debian"
+    when: not init_upstart.stat.exists and ansible_os_family == "Debian" and KUBERNETES_VERSION is undefined 
 
   - name: install docker sysvinit script for RedHat/CentOS
     template: src=docker/docker-ubuntu.j2 dest=/etc/init.d/docker owner=root group=root mode=0755
-    when: not init_upstart.stat.exists and ansible_os_family == "RedHat"
+    when: not init_upstart.stat.exists and ansible_os_family == "RedHat" and KUBERNETES_VERSION is undefined
 
-  - name: install docker-gc script
-    template: src=docker/docker-gc.j2 dest=/usr/bin/docker-gc owner=root group=root mode=0755
+#  - name: install docker-gc script
+#    template: src=docker/docker-gc.j2 dest=/usr/bin/docker-gc owner=root group=root mode=0755
 
-  - name: install docker-gc cron
-    cron: name="docker-gc" minute="0" hour="*" job="/usr/bin/docker-gc 2>&1 | /usr/bin/logger -t docker-gc"
+#  - name: install docker-gc cron
+#    cron: name="docker-gc" minute="0" hour="*" job="/usr/bin/docker-gc 2>&1 | /usr/bin/logger -t docker-gc"
   
-  - name: set https_proxy in dorcker
-    lineinfile:
-      path: /etc/default/docker
-      state: present
-      line: "https_proxy={{ proxy_env.https_proxy }}"
-      create: yes
-    when: proxy_env.https_proxy is defined
+#  - name: set https_proxy in dorcker
+#    lineinfile:
+#      path: /etc/default/docker
+#      state: present
+#      line: "https_proxy={{ proxy_env.https_proxy }}"
+#      create: yes
+#    when: proxy_env.https_proxy is defined
 
-  - name: set http_proxy in docker
-    lineinfile:
-      path: /etc/default/docker
-      state: present
-      line: "http_proxy={{ proxy_env.http_proxy }}"
-      create: yes
-    when: proxy_env.http_proxy is defined
+#  - name: set http_proxy in docker
+#    lineinfile:
+#      path: /etc/default/docker
+#      state: present
+#      line: "http_proxy={{ proxy_env.http_proxy }}"
+#      create: yes
+#    when: proxy_env.http_proxy is defined
 
   - name: make sure docker daemon is running
     service: name=docker state=started enabled=yes

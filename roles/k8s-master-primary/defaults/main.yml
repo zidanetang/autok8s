@@ -7,6 +7,7 @@ enable_proxy: true
 KUBERNETES_VERSION: "1.18.4"
 
 gcr_url: gcr.io/google-containers
+ali_url: registry.cn-hangzhou.aliyuncs.com/google_containers
 
 kube_path: /etc/kubernetes
 
