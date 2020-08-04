@@ -13,15 +13,32 @@
   # Create deb repos for kubernetes packages (kube*, cni, etc.)
 - block:
   # Debian based (includes Ubuntu)
-  - apt_key:
+  - name: Install apt key with {{ k8s_apt_key }}
+    apt_key:
       url: "{{ k8s_apt_key }}apt-key.gpg"
       state: present
     environment: "{{ proxy_env | default ({}) }}"
-    when: ansible_os_family == "Debian"
+    when: ansible_os_family == "Debian" and localtions != "Asia/Shanghai"
 
-  - apt_repository:
+  - name: Install repo with {{ k8s_repo }}  
+    apt_repository:
       repo: "deb {{ k8s_repo }} kubernetes-xenial main"
       state: present
       update_cache: yes
     environment: "{{ proxy_env | default ({}) }}"
-    when: ansible_os_family == "Debian"
+    when: ansible_os_family == "Debian" and localtions != "Asia/Shanghai"
+
+  - name: Install apt key with {{ ali_k8s_apt_key }}
+    apt_key:
+      url: "{{ ali_k8s_apt_key }}apt-key.gpg"
+      state: present
+    environment: "{{ proxy_env | default ({}) }}"
+    when: ansible_os_family == "Debian" and localtions == "Asia/Shanghai"
+
+  - name: Install repo with {{ ali_k8s_repo }}
+    apt_repository:
+      repo: "deb {{ ali_k8s_repo }} kubernetes-xenial main"
+      state: present
+      update_cache: yes
+    environment: "{{ proxy_env | default ({}) }}"
+    when: ansible_os_family == "Debian" and localtions == "Asia/Shanghai"

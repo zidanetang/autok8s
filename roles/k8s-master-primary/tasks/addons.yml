@@ -1,10 +1,16 @@
 ---
 # Install CNI network add-on
 
-- name: Instrall flannel config file
-  copy: 
-    src: flannel/flannel.yml
-    dest: "{{ kube_path }}/flannel.yml"
+#- name: Instrall flannel config file
+#  copy: 
+#    src: flannel/flannel.yml
+#    dest: "{{ kube_path }}/flannel.yml"
 
-- name: Install flannel
-  raw: /bin/kubectl --kubeconfig="{{ kube_path }}/admin.conf" create -f "{{ kube_path }}/flannel.yml"
+- name: Install network addon
+  raw: kubectl --kubeconfig="{{ kube_path }}/admin.conf" apply -f {% if network_addon == "Calico" %}{{ Calico_url }}{% elif network_addon == "Cilium" %}{{ Cilium_url }}{% else %}{{ flannel_url }}{% endif %}
+  register: result
+  retries: 3
+  delay: 5
+  until: result is not failed
+  tags:
+    - deploy

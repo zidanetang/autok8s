@@ -16,3 +16,8 @@ K8S_IMAGES:
     - { name: "{{ gcr_url }}/kube-controller-manager-amd64", tag: "v{{ KUBERNETES_VERSION }}" }
     - { name: "{{ gcr_url }}/kube-apiserver-amd64", tag: "v{{ KUBERNETES_VERSION }}" }
 
+network_addon: flannel
+
+flannel_url: "https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+Calico_url: "https://docs.projectcalico.org/v3.14/manifests/calico.yaml"
+Cilium_url: "https://raw.githubusercontent.com/cilium/cilium/v1.8/install/kubernetes/quick-install.yaml"

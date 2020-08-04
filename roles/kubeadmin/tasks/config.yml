@@ -4,11 +4,11 @@
 
 ### prepare cloud-config
 - block:
-  - name: prepare cloud-config file for cloudProvider {{ cloudProvider }}
+  - name: Prepare cloud-config file for cloudProvider {{ cloudProvider }}
     set_fact: fact_cloud_provider='--cloud-provider={{ cloudProvider }} --cloud-config=/etc/kubernetes/cloud-config'
     when: cloudProvider is defined
 
-  - name: prepare cloud-config file
+  - name: Prepare cloud-config file
     template:
       src: cloud-config.j2
       dest: /etc/kubernetes/cloud-config

@@ -1,0 +1,11 @@
+---
+
+  - name: Display token
+    debug:
+      msg: "{{ token.stdout | regex_replace('.*WARNING.*\r\n', '') }}"
+    register: message
+    tags:
+      - join
+
+#- name: join cluster
+#  raw: kubeadm join

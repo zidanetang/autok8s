@@ -1,4 +1,17 @@
+- name: 'Generate token'
+  hosts: 
+  roles:
+    - { role: k8s-master-primary }
+
+
+
 - name: 'Deploy k8s {{ role }}'
   hosts: nodes
   roles:
-    - { role: k8s-node, tags: ['deploy'] }
+#    - { role: common }
+#    - { role: kubeadmin }
+    - { role: k8s-node }
+  vars:
+    dnsDomain: cluster.local
+    localtions: Asia/Shanghai
+    KUBERNETES_VERSION: 1.18.2

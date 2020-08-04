@@ -1,10 +1,13 @@
 ---
-proxy_env:
-  https_proxy: http://172.16.1.112:10809
-  http_proxy: http://172.16.1.112:10809
+#proxy_env:
+#  https_proxy: http://172.16.1.112:10809
+#  http_proxy: http://172.16.1.112:10809
 
 k8s_apt_key: https://packages.cloud.google.com/apt/doc/
 k8s_repo: http://apt.kubernetes.io/
+
+ali_k8s_apt_key: https://mirrors.aliyun.com/kubernetes/apt/doc/
+ali_k8s_repo: https://mirrors.aliyun.com/kubernetes/apt/
 
 KUBERNETES_VERSION: "v1.18.4"
 

@@ -1,4 +1,4 @@
-#- include: repo.yml
-#- include: kubelet.yml
-#- include: kubeadm.yml
+- include: repo.yml
+- include: kubelet.yml
+- include: kubeadm.yml
 - include: config.yml

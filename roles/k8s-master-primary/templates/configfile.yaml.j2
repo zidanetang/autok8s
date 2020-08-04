@@ -39,7 +39,7 @@ etcd:
   local:
     #imageRepository: "k8s.gcr.io"
     imageRepository: {% if (localtions == 'Asia/Shanghai') %}{{ 'registry.cn-hangzhou.aliyuncs.com/google_containers' }}{% else %}{{ 'k8s.gcr.io' }}{% endif %} 
-    imageTag: "3.2.24"
+    imageTag: "3.4.3-0"
     dataDir: "/var/lib/etcd"
 #    extraArgs:
 #      listen-client-urls: "http://{{ Role }}-{{ ipadd | replace('.', '-') }}:2379"

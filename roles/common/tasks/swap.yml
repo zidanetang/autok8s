@@ -1,7 +1,7 @@
 ---
 ### Handling SWAP (k8s 1.8 expects swapoff or configure kubelet to accept it
 - block:
-  - name: swapoff (prereq k8s 1.8)
+  - name: Swapoff (prereq k8s 1.8)
     command: swapoff --all
 
   - name: Remove swap from /etc/fstab (when named swap)

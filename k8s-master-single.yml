@@ -1,18 +1,20 @@
-- name: 'Deploy k8s {{ Role }} HA'
+- name: 'Deploy k8s {{ Role }} primary'
   hosts: master-primary
   roles:
-    - { role: common }
-    - { role: kubeadmin }
-    - { role: k8s-master-primary, tags: ['deploy'] }
+    - { role: common, tags: ['deploy'] }
+    - { role: kubeadmin, tags: ['deploy'] }
+    - { role: k8s-master-primary }
   vars:
     servicesubnet: 10.10.0.0/24
     podsunbet: 10.20.0.0/24
     dnsDomain: cluster.local
-    proxy_env:
-      http_proxy: http://172.16.1.112:10809
-      https_proxy: http://172.16.1.112:10809
+    #proxy_env:
+    #  http_proxy: http://172.16.1.112:10809
+    #  https_proxy: http://172.16.1.112:10809
     localtions: Asia/Shanghai  
     KUBERNETES_VERSION: 1.18.2
+    #support: Calico, Cilium, default is flannel if it is not defined.
+    #network_addon: 
  #To do:
     #cloudProvider:
 

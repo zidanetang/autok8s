@@ -1,7 +1,7 @@
 ---
-#  - set_fact:
-#      env_kc: '{{ proxy_env |default({}) | combine ({"KUBECONFIG" :"/etc/kubernetes/admin.conf"}) }}'
-#    when: proxy_env is defined
+  - set_fact:
+      env_kc: '{{ proxy_env |default({}) | combine ({"KUBECONFIG" :"/etc/kubernetes/admin.conf"}) }}'
+    when: proxy_env is defined
 #    tags:
 #    - always
 
@@ -30,8 +30,12 @@
     raw: docker pull {{ item.name }}:{{ item.tag }}
     with_items: "{{ K8S_IMAGES }}"
     when: localtions != 'Asia/Shanghai'
+    tags:
+      - deploy
 
   - name: Pull k8s images from {{ ali_url  }}
     raw: docker pull {{ item.name }}:{{ item.tag }}
     with_items: "{{ K8S_IMAGES | replace(gcr_url, ali_url) }}"
     when: localtions == 'Asia/Shanghai'    
+    tags:
+      - deploy
